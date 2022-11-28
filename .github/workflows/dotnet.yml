@@ -3,7 +3,8 @@
 
 name: .NET
 
-on:
+on: 
+  workflow_dispatch:
   push:
     paths:
       - 'Application/**'
