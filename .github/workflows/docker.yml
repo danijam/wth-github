@@ -1,0 +1,51 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET - Docker
+
+on: 
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Application/**'
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  - registryName: xcwthdevopsreg.azurecr.io
+  - repositoryName: wth/dotnetcoreapp
+  - dockerFolderPath: Application/src/RazorPagesTestSample
+  - tag: ${{ GITHUB.RUN_NUMBER }}
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore ./Application/src/RazorPagesTestSample/RazorPagesTestSample.csproj
+    - name: Build
+      run: dotnet build ./Application/src/RazorPagesTestSample/RazorPagesTestSample.csproj --no-restore
+    - name: Test
+      run: dotnet test ./Application/tests/RazorPagesTestSample.Tests/RazorPagesTestSample.Tests.csproj --no-build --verbosity normal
+
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: docker login
+        run: docker login $registryName -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
+
+      - name: docker build
+        run: docker build -t $registryName/$repositoryName:$tag --build-arg build_version=$tag $dockerFolderPath
+
+      - name: docker push
+        run: docker push $registryName/$repositoryName:$tag
