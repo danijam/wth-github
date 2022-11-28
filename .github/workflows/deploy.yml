@@ -6,7 +6,7 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
     env: 
-      targetEnv: xcwthdevops-test
+      targetEnv: prod
     steps:
       - name: Check out
         uses: actions/checkout@v3
@@ -16,4 +16,4 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
       - run: |
-          az deployment group create -g wth-github --template-file ./ARM-Templates/container-webapp-template.json --parameters webAppName=$targetEnv
+          az deployment group create -g wth-github --template-file ./ARM-Templates/container-webapp-template.json --parameters webAppName=xcwthdevops-$targetEnv
