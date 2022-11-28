@@ -14,4 +14,4 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
       - run: |
-          az group list
+          az deployment group create -g wth-github --template-file ./ARM-Templates/container-webapp-template.json
