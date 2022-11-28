@@ -36,6 +36,7 @@ jobs:
       run: dotnet test ./Application/tests/RazorPagesTestSample.Tests/RazorPagesTestSample.Tests.csproj --no-build --verbosity normal
 
   docker:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
