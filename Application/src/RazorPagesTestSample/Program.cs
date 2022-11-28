@@ -19,7 +19,8 @@ namespace RazorPagesTestSample
                 var services = scope.ServiceProvider;
                 var db = services.GetRequiredService<AppDbContext>();
 
-                db.Database.EnsureCreated();
+                // JD was here
+                db.Databases.EnsureCreated();
 
                 if (!db.Messages.Any())
                 {
